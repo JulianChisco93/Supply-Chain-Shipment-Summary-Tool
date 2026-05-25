@@ -10,9 +10,7 @@ The codebase provides modular, reusable Python functions that return ready-to-us
 
 ## Sprint Goal
 
-> _Update this section with your team's sprint goal after Sprint Planning (Step 3)._
-
-Example: *"Deliver a working Python module that loads, cleans, and summarizes the supply delivery dataset with shipment, country, vendor, and product group reports."*
+Develop a functional Python-based Supply Chain Shipment Summary Tool that can load, clean, and summarize the dataset, while demonstrating Agile collaboration through GitHub workflows and Taiga tracking.
 
 ## Team
 
