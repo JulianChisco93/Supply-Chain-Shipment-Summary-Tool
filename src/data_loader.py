@@ -7,9 +7,17 @@ This module contains reusable functions to load the raw and cleaned Supply Chain
 from pathlib import Path
 import pandas as pd
 
+
+# Project root = parent folder of src/
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
 # Define the path to the data directory
-RAW_DATA_PATH = Path("data/supply_delivery_history.csv")
-CLEAN_DATA_PATH = Path("data/supply_delivery_history_clean.csv")
+# RAW_DATA_PATH = Path("data/supply_delivery_history.csv")
+# CLEAN_DATA_PATH = Path("data/supply_delivery_history_clean.csv")
+
+# Define the paths to the raw and cleaned datasets --> using absolute path based on the project structure
+RAW_DATA_PATH = PROJECT_ROOT / "data" / "supply_delivery_history.csv"
+CLEAN_DATA_PATH = PROJECT_ROOT / "data" / "supply_delivery_history_clean.csv"
 
 
 # Function to load the raw dataset
