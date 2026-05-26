@@ -11,6 +11,9 @@ from src.data_loader import load_clean_data
 from pathlib import Path
 
 
+# ---------------------------------------------------------------------
+# Functions to prepare data for vendor analysis
+# ---------------------------------------------------------------------
 # function to load the cleaned dataset
 def load_vendor_dataset() -> pd.DataFrame:
     """
@@ -99,3 +102,73 @@ def prepare_vendor_data(df: pd.DataFrame | None = None) -> pd.DataFrame:
             vendor_df[column] = clean_numeric_value(vendor_df[column])   
 
     return vendor_df
+
+
+
+# ---------------------------------------------------------------------
+# Functions to show insights about vendors
+# ---------------------------------------------------------------------
+#function to show the summary of the vendor dataset
+def get_vendor_summary(df: pd.DataFrame | None = None) -> pd.DataFrame:
+    """
+    Create a vendor-level summary.
+    Returns:
+        pd.DataFrame: Vendor summary sorted by revenue descending.
+    """
+    vendor_df = prepare_vendor_data(df)
+
+    summary = (
+        vendor_df
+        .groupby("Vendor", as_index=False)
+        .agg(
+            Shipment_Records=("ID", "count"),
+            Total_Line_Item_Quantity=("Line Item Quantity", "sum"),
+            Total_Line_Item_Value=("Line Item Value", "sum"),
+            Average_Pack_Price=("Pack Price", "mean"),
+            Average_Unit_Price=("Unit Price", "mean"),
+        )
+    )
+
+    summary = summary.sort_values(
+        by="Total_Line_Item_Value",
+        ascending=False
+    ).reset_index(drop=True)
+
+    return summary
+
+
+# function to select top n vendors by revenue
+def get_top_vendors_by_revenue(
+    df: pd.DataFrame | None = None,
+    top_n: int = 5
+) -> pd.DataFrame:
+    """
+    Return the top vendors by total line item value.
+    Returns:
+        pd.DataFrame: Top vendors by revenue.
+    """
+    summary = get_vendor_summary(df)
+    return summary.head(top_n)
+
+# function to select bottom n vendors by revenue
+def get_bottom_vendors_by_revenue(
+    df: pd.DataFrame | None = None,
+    bottom_n: int = 5
+) -> pd.DataFrame:
+    """
+    Return the bottom vendors by total line item value
+    Returns:
+        pd.DataFrame: Bottom vendors by revenue.
+    """
+    summary = get_vendor_summary(df)
+
+    summary = summary[
+        (summary["Total_Line_Item_Value"] > 0)
+        & (summary["Vendor"] != "UNKNOWN")
+    ]
+
+    return summary.tail(bottom_n).sort_values(
+        by="Total_Line_Item_Value",
+        ascending=True
+    ).reset_index(drop=True)
+
