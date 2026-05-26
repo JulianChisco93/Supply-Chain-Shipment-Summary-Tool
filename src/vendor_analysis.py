@@ -5,6 +5,8 @@ vendor_analysis.py
 # Import necessary libraries
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
+import seaborn as sns
 
 from src.data_loader import load_clean_data
 
@@ -172,3 +174,173 @@ def get_bottom_vendors_by_revenue(
         ascending=True
     ).reset_index(drop=True)
 
+
+
+# ---------------------------------------------------------------------
+# Functions to show Visualizations about vendors
+# ---------------------------------------------------------------------
+#function to plot the total line item value for the top vendors
+def plot_vendor_revenue(
+    df: pd.DataFrame | None = None,
+    top_n: int = 10
+) -> None:
+    """
+    Plot the total line item value for the top vendors.
+    """
+    summary = get_vendor_summary(df)
+    top_vendors = summary.head(top_n)
+
+    plt.figure(figsize=(12, 6))
+    plt.bar(top_vendors["Vendor"], top_vendors["Total_Line_Item_Value"], color="skyblue")
+    plt.xlabel("Vendor")
+    plt.ylabel("Total Line Item Value (Revenue)")
+    plt.title(f"Top {top_n} Vendors by Revenue")
+    plt.xticks(rotation=45, ha="right")
+    plt.tight_layout()
+    plt.show()
+
+
+#function to plot the total line item quantity for the top vendors
+def plot_vendor_quantity(
+    df: pd.DataFrame | None = None,
+    top_n: int = 10
+) -> None:
+    """
+    Plot the total line item quantity for the top vendors.
+    """
+    summary = get_vendor_summary(df)
+    top_vendors = summary.head(top_n)
+
+    plt.figure(figsize=(12, 6))
+    plt.bar(top_vendors["Vendor"], top_vendors["Total_Line_Item_Quantity"], color="salmon")
+    plt.xlabel("Vendor")
+    plt.ylabel("Total Line Item Quantity")
+    plt.title(f"Top {top_n} Vendors by Quantity")
+    plt.xticks(rotation=45, ha="right")
+    plt.tight_layout()
+    plt.show()
+
+
+# function to plot the total line item value (in bars) for the top vendors and the total line item quantity (in line) for the same vendors
+def plot_vendor_revenue_and_quantity(
+    df: pd.DataFrame | None = None,
+    top_n: int = 10
+) -> None:
+    """
+    Plot the total line item value (in bars) for the top vendors and the total line item quantity (in line) for the same vendors.
+    """
+    summary = get_vendor_summary(df)
+    top_vendors = summary.head(top_n)
+
+    fig, ax1 = plt.subplots(figsize=(12, 6))
+
+    ax1.bar(top_vendors["Vendor"], top_vendors["Total_Line_Item_Value"], color="skyblue")
+    ax1.set_xlabel("Vendor")
+    ax1.set_ylabel("Total Line Item Value (Revenue)", color="skyblue")
+    ax1.tick_params(axis="y", labelcolor="skyblue")
+    ax1.set_title(f"Top {top_n} Vendors by Revenue and Quantity")
+    ax1.set_xticklabels(top_vendors["Vendor"], rotation=45, ha="right")
+
+    ax2 = ax1.twinx()
+    ax2.plot(top_vendors["Vendor"], top_vendors["Total_Line_Item_Quantity"], color="salmon", marker="o")
+    ax2.set_ylabel("Total Line Item Quantity", color="salmon")
+    ax2.tick_params(axis="y", labelcolor="salmon")
+
+    plt.tight_layout()
+    plt.show()
+
+# function to improve the previous plot by adding labels, formatting the y-axis, and improving the title and x-axis labels
+def plot_vendor_revenue_and_quantity_improved(df, top_n=10):
+    """
+    Plot Revenue as bars and Quantity as line for the top vendors by revenue.
+    """
+
+    summary = get_vendor_summary(df)
+    top_vendors = summary.head(top_n).copy()
+
+    fig, ax1 = plt.subplots(figsize=(14, 7))
+
+    # Bar chart: Revenue
+    bars = ax1.bar(
+        top_vendors["Vendor"],
+        top_vendors["Total_Line_Item_Value"],
+        color="#4FA3D1",
+        alpha=0.85,
+        label="Revenue"
+    )
+
+    ax1.set_xlabel("Vendor")
+    ax1.set_ylabel("Revenue", color="#4FA3D1", fontsize=11)
+    ax1.tick_params(axis="y", labelcolor="#4FA3D1")
+
+    # Format left Y-axis as currency in millions
+    ax1.yaxis.set_major_formatter(
+        mtick.FuncFormatter(lambda x, _: f"${x/1_000_000:,.1f}M")
+    )
+
+    # Add revenue labels on bars
+    for bar in bars:
+        height = bar.get_height()
+        ax1.text(
+            bar.get_x() + bar.get_width() / 2,
+            height,
+            f"${height/1_000_000:,.1f}M",
+            ha="center",
+            va="bottom",
+            fontsize=9,
+            rotation=0
+        )
+
+    # Line chart: Quantity
+    ax2 = ax1.twinx()
+
+    ax2.plot(
+        top_vendors["Vendor"],
+        top_vendors["Total_Line_Item_Quantity"],
+        color="#E76F51",
+        marker="o",
+        linewidth=2.5,
+        label="Quantity"
+    )
+
+    ax2.set_ylabel("Quantity", color="#E76F51", fontsize=11)
+    ax2.tick_params(axis="y", labelcolor="#E76F51")
+
+    # Format right Y-axis in thousands/millions
+    ax2.yaxis.set_major_formatter(
+        mtick.FuncFormatter(lambda x, _: f"{x/1_000_000:,.1f}M")
+    )
+
+    # Title
+    plt.title(
+        f"Top {top_n} Vendors by Revenue and Quantity",
+        fontsize=15,
+        fontweight="bold",
+        pad=15
+    )
+
+    # Improve X labels
+    ax1.set_xticks(range(len(top_vendors["Vendor"])))
+    ax1.set_xticklabels(
+        top_vendors["Vendor"],
+        rotation=45,
+        ha="right",
+        fontsize=9
+    )
+
+    # Grid only for revenue axis
+    ax1.grid(axis="y", linestyle="--", alpha=0.3)
+    ax1.set_axisbelow(True)
+
+    # Add combined legend
+    lines_1, labels_1 = ax1.get_legend_handles_labels()
+    lines_2, labels_2 = ax2.get_legend_handles_labels()
+    ax1.legend(
+        lines_1 + lines_2,
+        labels_1 + labels_2,
+        loc="upper right",
+        frameon=True
+    )
+
+    plt.tight_layout()
+    plt.show()
