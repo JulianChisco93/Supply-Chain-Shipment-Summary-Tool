@@ -344,3 +344,158 @@ def plot_vendor_revenue_and_quantity_improved(df, top_n=10):
 
     plt.tight_layout()
     plt.show()
+
+
+
+# function to plot top 5 vendors by revenue in horizontal bars
+def plot_top_vendors_by_revenue_horizontal(df, top_n=5):
+    """
+    Plot the top vendors by revenue in horizontal bars.
+    """
+    summary = get_vendor_summary(df)
+    top_vendors = summary.head(top_n).copy()
+
+    # Create figure
+    plt.figure(figsize=(14, 7))
+
+    # Create horizontal bar chart
+    ax = sns.barplot(
+        x="Total_Line_Item_Value",
+        y="Vendor",
+        data=top_vendors,
+        palette="Blues_r"
+    )
+
+    # FORMAT X-AXIS AS CURRENCY
+    ax.xaxis.set_major_formatter(
+        mtick.FuncFormatter(lambda x, _: f'${x/1_000_000:,.0f}M')
+    )
+
+    # ADD VALUES TO BARS
+    for i, value in enumerate(top_vendors["Total_Line_Item_Value"]):
+
+        ax.text(
+            value + (top_vendors["Total_Line_Item_Value"].max() * 0.01),
+            i,
+            f'${value/1_000_000:,.1f}M',
+            va='center',
+            fontsize=10,
+            fontweight='bold',
+            color='black'
+        )
+
+    # TITLES AND LABELS
+    plt.title(
+        f"Top {top_n} Vendors by Revenue",
+        fontsize=16,
+        fontweight='bold',
+        pad=15
+    )
+
+    plt.xlabel(
+        "Revenue",
+        fontsize=12
+    )
+
+    plt.ylabel(
+        "Vendor",
+        fontsize=12
+    )
+
+    # IMPROVE STYLE
+    ax.grid(
+        axis='x',
+        linestyle='--',
+        alpha=0.3
+    )
+
+    ax.set_axisbelow(True)
+
+    # Remove top/right borders
+    sns.despine(left=False, bottom=False)
+
+    # Better spacing
+    plt.tight_layout()
+
+    # Show chart
+    plt.show()
+
+
+# function to plot bottom 5 vendors by revenue in horizontal bars
+def plot_bottom_vendors_by_revenue_horizontal(df, bottom_n=5):
+    """
+    Plot the bottom vendors by revenue in horizontal bars.
+    """
+    summary = get_vendor_summary(df)
+
+    summary = summary[
+        (summary["Total_Line_Item_Value"] > 0)
+        & (summary["Vendor"] != "UNKNOWN")
+    ]
+
+    bottom_vendors = summary.tail(bottom_n).copy()
+
+    # Create figure
+    plt.figure(figsize=(14, 7))
+
+    # Create horizontal bar chart
+    ax = sns.barplot(
+        x="Total_Line_Item_Value",
+        y="Vendor",
+        data=bottom_vendors,
+        palette="Reds_r"
+    )
+
+    # FORMAT X-AXIS AS CURRENCY
+    ax.xaxis.set_major_formatter(
+        mtick.FuncFormatter(lambda x, _: f'${x/1_000_000:,.0f}M')
+    )
+
+    # ADD VALUES TO BARS
+    for i, value in enumerate(bottom_vendors["Total_Line_Item_Value"]):
+
+        ax.text(
+            value + (bottom_vendors["Total_Line_Item_Value"].max() * 0.01),
+            i,
+            f'${value/1_000_000:,.1f}M',
+            va='center',
+            fontsize=10,
+            fontweight='bold',
+            color='black'
+        )
+
+    # TITLES AND LABELS
+    plt.title(
+        f"Bottom {bottom_n} Vendors by Revenue",
+        fontsize=16,
+        fontweight='bold',
+        pad=15
+    )
+
+    plt.xlabel(
+        "Revenue",
+        fontsize=12
+    )
+
+    plt.ylabel(
+        "Vendor",
+        fontsize=12
+    )
+
+    # IMPROVE STYLE
+    ax.grid(
+        axis='x',
+        linestyle='--',
+        alpha=0.3
+    )
+
+    ax.set_axisbelow(True)
+
+    # Remove top/right borders
+    sns.despine(left=False, bottom=False)
+
+    # Better spacing
+    plt.tight_layout()
+
+    # Show chart
+    plt.show()  
