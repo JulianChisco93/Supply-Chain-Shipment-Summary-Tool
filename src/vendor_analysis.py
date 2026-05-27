@@ -616,3 +616,47 @@ def plot_vendor_dashboard(vendor_data, top_n=10, top_revenue_n=5, bottom_revenue
 
     # plt.tight_layout()
     plt.show()
+
+
+
+
+# ---------------------------------------------------------------------
+# Main vendor workflow to run the analysis and show the charts
+# ---------------------------------------------------------------------
+# function to run the vendor analysis workflow
+def run_vendor_analysis(dataset=None, show_charts: bool = True) -> dict:
+    """
+    Run the vendor analysis workflow.
+
+    Args:
+        dataset: Optional dataset. If None, vendor data is prepared internally.
+        show_charts (bool): If True, displays the vendor dashboard.
+
+    Returns:
+        dict: Dictionary containing vendor data and vendor summary.
+    """
+
+    # prepare vendor data (if not provided) and get summary
+    if dataset is None:
+        vendor_data = prepare_vendor_data()
+    else:
+        vendor_data = prepare_vendor_data(dataset)
+
+    # get vendor summary
+    vendor_summary = get_vendor_summary(vendor_data)
+
+    print("\nVendor Summary:")
+    print(vendor_summary.head(10))
+
+    if show_charts:
+        plot_vendor_dashboard(
+            vendor_data,
+            top_n=10,
+            top_revenue_n=5,
+            bottom_revenue_n=5
+        )
+
+    return {
+        "vendor_data": vendor_data,
+        "vendor_summary": vendor_summary
+    }
