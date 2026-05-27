@@ -1,10 +1,7 @@
 import pandas as pd
 
-df = pd.read_csv("supply_delivery_history.csv")
-print(df.columns)
-print(df.head())
-
-print(df.info())
+# NOTE:
+# This module assumes that the dataset has already been cleaned.
 
 def summarize_by_country(df):
     return df.groupby("Country").agg({
@@ -21,5 +18,3 @@ def top_countries_by_value(df, top_n=10):
 
 def shipment_mode_by_country(df):
     return df.groupby(["Country", "Shipment Mode"]).size().reset_index(name="Count")
-
-
