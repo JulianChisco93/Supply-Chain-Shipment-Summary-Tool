@@ -6,6 +6,7 @@ vendor_analysis.py
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
+import matplotlib.gridspec as gridspec
 import seaborn as sns
 
 from src.data_loader import load_clean_data
@@ -250,7 +251,7 @@ def plot_vendor_revenue_and_quantity(
     plt.show()
 
 # function to improve the previous plot by adding labels, formatting the y-axis, and improving the title and x-axis labels
-def plot_vendor_revenue_and_quantity_improved(df, top_n=10):
+def plot_vendor_revenue_and_quantity_improved(df, top_n=10, pre_ax=None):
     """
     Plot Revenue as bars and Quantity as line for the top vendors by revenue.
     """
@@ -258,7 +259,21 @@ def plot_vendor_revenue_and_quantity_improved(df, top_n=10):
     summary = get_vendor_summary(df)
     top_vendors = summary.head(top_n).copy()
 
-    fig, ax1 = plt.subplots(figsize=(14, 7))
+    # Shorten vendor names if they are too long for better visualization
+    top_vendors["Vendor"] = top_vendors["Vendor"].apply(
+        lambda x: x[:30] + "..." if len(x) > 30 else x
+    )
+
+    # fig, ax1 = plt.subplots(figsize=(14, 7))
+
+    created_internal_figure = False
+
+    if pre_ax is None:
+        fig, ax1 = plt.subplots(figsize=(14, 7))
+        created_internal_figure = True
+    else:
+        ax1 = pre_ax
+
 
     # Bar chart: Revenue
     bars = ax1.bar(
@@ -312,7 +327,8 @@ def plot_vendor_revenue_and_quantity_improved(df, top_n=10):
     )
 
     # Title
-    plt.title(
+    # plt.title(
+    ax1.set_title(
         f"Top {top_n} Vendors by Revenue and Quantity",
         fontsize=15,
         fontweight="bold",
@@ -342,28 +358,43 @@ def plot_vendor_revenue_and_quantity_improved(df, top_n=10):
         frameon=True
     )
 
-    plt.tight_layout()
-    plt.show()
+    # ONLY SHOW IF STANDALONE    
+    if created_internal_figure:
+        plt.tight_layout()
+        plt.show()
 
 
 
 # function to plot top 5 vendors by revenue in horizontal bars
-def plot_top_vendors_by_revenue_horizontal(df, top_n=5):
+def plot_top_vendors_by_revenue_horizontal(df, top_n=5, pre_ax=None):
     """
     Plot the top vendors by revenue in horizontal bars.
     """
     summary = get_vendor_summary(df)
     top_vendors = summary.head(top_n).copy()
 
+    # Shorten vendor names if they are too long for better visualization
+    top_vendors["Vendor"] = top_vendors["Vendor"].apply(
+        lambda x: x[:30] + "..." if len(x) > 30 else x
+    )
+
     # Create figure
-    plt.figure(figsize=(14, 7))
+    # plt.figure(figsize=(14, 7))
+    created_internal_figure = False
+
+    if pre_ax is None:
+        fig, ax = plt.subplots(figsize=(14, 7))
+        created_internal_figure = True
+    else:
+        ax = pre_ax
 
     # Create horizontal bar chart
     ax = sns.barplot(
         x="Total_Line_Item_Value",
         y="Vendor",
         data=top_vendors,
-        palette="Blues_r"
+        palette="Blues_r",
+        ax = ax
     )
 
     # FORMAT X-AXIS AS CURRENCY
@@ -385,19 +416,22 @@ def plot_top_vendors_by_revenue_horizontal(df, top_n=5):
         )
 
     # TITLES AND LABELS
-    plt.title(
+    # plt.title(
+    ax.set_title(
         f"Top {top_n} Vendors by Revenue",
         fontsize=16,
         fontweight='bold',
         pad=15
     )
 
-    plt.xlabel(
+    # plt.xlabel(
+    ax.set_xlabel(
         "Revenue",
         fontsize=12
     )
 
-    plt.ylabel(
+    # plt.ylabel(
+    ax.set_ylabel(
         "Vendor",
         fontsize=12
     )
@@ -414,15 +448,16 @@ def plot_top_vendors_by_revenue_horizontal(df, top_n=5):
     # Remove top/right borders
     sns.despine(left=False, bottom=False)
 
-    # Better spacing
-    plt.tight_layout()
+    if created_internal_figure:
+        # Better spacing
+        plt.tight_layout()
 
-    # Show chart
-    plt.show()
+        # Show chart
+        plt.show()
 
 
 # function to plot bottom 5 vendors by revenue in horizontal bars
-def plot_bottom_vendors_by_revenue_horizontal(df, bottom_n=5):
+def plot_bottom_vendors_by_revenue_horizontal(df, bottom_n=5, pre_ax=None):
     """
     Plot the bottom vendors by revenue in horizontal bars.
     """
@@ -434,16 +469,29 @@ def plot_bottom_vendors_by_revenue_horizontal(df, bottom_n=5):
     ]
 
     bottom_vendors = summary.tail(bottom_n).copy()
+    
+    # Shorten vendor names if they are too long for better visualization
+    bottom_vendors["Vendor"] = bottom_vendors["Vendor"].apply(
+        lambda x: x[:30] + "..." if len(x) > 30 else x
+    )
 
     # Create figure
-    plt.figure(figsize=(14, 7))
+    # plt.figure(figsize=(14, 7))
+    created_internal_figure = False
+
+    if pre_ax is None:
+        fig, ax = plt.subplots(figsize=(14, 7))
+        created_internal_figure = True
+    else:
+        ax = pre_ax
 
     # Create horizontal bar chart
     ax = sns.barplot(
         x="Total_Line_Item_Value",
         y="Vendor",
         data=bottom_vendors,
-        palette="Reds_r"
+        palette="Reds_r",
+        ax=ax
     )
 
     # FORMAT X-AXIS AS CURRENCY
@@ -465,19 +513,22 @@ def plot_bottom_vendors_by_revenue_horizontal(df, bottom_n=5):
         )
 
     # TITLES AND LABELS
-    plt.title(
+    # plt.title(
+    ax.set_title(
         f"Bottom {bottom_n} Vendors by Revenue",
         fontsize=16,
         fontweight='bold',
         pad=15
     )
 
-    plt.xlabel(
+    # plt.xlabel(
+    ax.set_xlabel(
         "Revenue",
         fontsize=12
     )
 
-    plt.ylabel(
+    # plt.ylabel(
+    ax.set_ylabel(
         "Vendor",
         fontsize=12
     )
@@ -494,8 +545,74 @@ def plot_bottom_vendors_by_revenue_horizontal(df, bottom_n=5):
     # Remove top/right borders
     sns.despine(left=False, bottom=False)
 
-    # Better spacing
-    plt.tight_layout()
+    if created_internal_figure:
+        # Better spacing
+        plt.tight_layout()
 
-    # Show chart
-    plt.show()  
+        # Show chart
+        plt.show()
+
+
+# ---------------------------------------------------------------------
+# Functions to make a combined figure like a dashboard with multiple vendor insights
+# ---------------------------------------------------------------------
+# function to create a dashboard with the previous graphs
+def plot_vendor_dashboard(vendor_data, top_n=10, top_revenue_n=5, bottom_revenue_n=5):
+    """
+    Creates one dashboard with:
+    1. Revenue and Quantity chart on the left
+    2. Top vendors by revenue on the top-right
+    3. Bottom vendors by revenue on the bottom-right
+    """
+
+    fig = plt.figure(figsize=(20, 10))
+
+    gs = gridspec.GridSpec(
+        2, 2,
+        width_ratios=[1.95, 1],
+        height_ratios=[1, 1],
+        wspace=0.55,
+        hspace=0.42
+    )
+
+    ax_left = fig.add_subplot(gs[:, 0])
+    ax_top_right = fig.add_subplot(gs[0, 1])
+    ax_bottom_right = fig.add_subplot(gs[1, 1])
+
+    # Call your existing chart functions
+    plot_vendor_revenue_and_quantity_improved(
+        vendor_data,
+        top_n=top_n,
+        pre_ax=ax_left
+    )
+
+    plot_top_vendors_by_revenue_horizontal(
+        vendor_data,
+        top_n=top_revenue_n,
+        pre_ax=ax_top_right
+    )
+
+    plot_bottom_vendors_by_revenue_horizontal(
+        vendor_data,
+        bottom_n=bottom_revenue_n,
+        pre_ax=ax_bottom_right
+    )
+
+    fig.suptitle(
+        "Vendor Revenue and Quantity Analysis",
+        fontsize=18,
+        fontweight="bold",
+        y=0.96
+    )
+
+    fig.subplots_adjust(
+        left=0.06,
+        right=0.97,
+        top=0.90,
+        bottom=0.16,
+        wspace=0.42,
+        hspace=0.42
+    )
+
+    # plt.tight_layout()
+    plt.show()
