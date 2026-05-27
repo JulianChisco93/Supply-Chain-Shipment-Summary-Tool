@@ -1,6 +1,7 @@
 import pandas as pd
 
-df = pd.read_csv("supply_delivery_history.csv")
+df = pd.read_csv("supply_delivery_history_clean.csv")
+#df = pd.read_csv("supply_delivery_history.csv")
 print(df.columns)
 print(df.head())
 
@@ -15,10 +16,16 @@ def summarize_by_country(df):
 def shipments_count_by_country(df):
     return df.groupby("Country").size().reset_index(name="Total Shipments")
 
+def top_countries_by_value(df, top_n=10):
+    summary = summarize_by_country(df)
+    return summary.sort_values(by="Line Item Value", ascending=False).head(top_n)
 
-import pandas as pd
+def shipment_mode_by_country(df):
+    return df.groupby(["Country", "Shipment Mode"]).size().reset_index(name="Count")
 
-df = pd.read_csv("supply_delivery_history_clean.csv")
+def summarize_by_country(df):
+    """
+    Returns total quantity and value per country.
+    """
 
-print(summarize_by_country(df).head(10))
-print(shipments_count_by_country(df).head(10))
+
