@@ -565,7 +565,7 @@ def plot_vendor_dashboard(vendor_data, top_n=10, top_revenue_n=5, bottom_revenue
     3. Bottom vendors by revenue on the bottom-right
     """
 
-    fig = plt.figure(figsize=(20, 10))
+    fig = plt.figure(figsize=(16, 7))
 
     gs = gridspec.GridSpec(
         2, 2,
@@ -602,7 +602,7 @@ def plot_vendor_dashboard(vendor_data, top_n=10, top_revenue_n=5, bottom_revenue
         "Vendor Revenue and Quantity Analysis",
         fontsize=18,
         fontweight="bold",
-        y=0.96
+        y=0.99
     )
 
     fig.subplots_adjust(
@@ -615,7 +615,7 @@ def plot_vendor_dashboard(vendor_data, top_n=10, top_revenue_n=5, bottom_revenue
     )
 
     # plt.tight_layout()
-    plt.show()
+    # plt.show()
 
 
 
