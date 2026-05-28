@@ -1,6 +1,12 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 
 from src.cleaning import DATE_COLUMNS, clean
+from src.vendor_analysis import run_vendor_analysis
+from src.country_analysis import run_country_analysis
+from src.product_analysis import run_product_analysis
+from src.shipment_summary import run_shipment_summary
+
 
 INPUT_PATH = "data/supply_delivery_history.csv"
 OUTPUT_PATH = "data/supply_delivery_history_clean.csv"
@@ -34,6 +40,34 @@ def main():
 
     df_clean.to_csv(OUTPUT_PATH, index=False)
     print(f"\nSaved cleaned dataset → {OUTPUT_PATH}")
+
+
+    # country analysis
+    print("---------------------------------------------------------------------")
+    print("\n--- Country analysis ---")
+    print("---------------------------------------------------------------------")
+    run_country_analysis(df_clean)
+
+    # product analysis
+    print("---------------------------------------------------------------------")
+    print("\n--- Product analysis ---")
+    print("---------------------------------------------------------------------")
+    run_product_analysis(df_clean)
+
+    # vendor analysis
+    print("---------------------------------------------------------------------")
+    print("\n--- Vendor analysis ---")
+    print("---------------------------------------------------------------------")
+    run_vendor_analysis(df_clean)
+
+    # shipment analysis
+    print("---------------------------------------------------------------------")
+    print("\n--- Shipment analysis ---")
+    print("---------------------------------------------------------------------")
+    run_shipment_summary(df_clean)
+
+    # show plots at the end
+    plt.show()
 
 
 if __name__ == "__main__":
