@@ -116,6 +116,7 @@ From the project root folder, run:
 ```bash
 python main.py
 ```
+The application will:
 
 This will:
 
