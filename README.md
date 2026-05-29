@@ -31,10 +31,17 @@ Develop a functional Python-based Supply Chain Shipment Summary Tool that can lo
 ```
 .
 ├── README.md
-├── supply_delivery_history.csv
-├── .gitignore
-└── src/                    # Python source code (to be added during sprint)
-    └── ...
+├── data/
+│   ├── supply_delivery_history.csv
+│   └── supply_delivery_history_clean.csv
+├── src/
+│   ├── cleaning.py
+│   ├── country_analysis.py
+│   ├── product_analysis.py
+│   ├── vendor_analysis.py
+│   └── shipment_summary.py
+├── main.py
+└── .gitignore
 ```
 
 ## Requirements
@@ -42,30 +49,30 @@ Develop a functional Python-based Supply Chain Shipment Summary Tool that can lo
 - Python 3.10+
 - pandas
 - matplotlib (optional, for plot functions)
+- seaborn
 
 Install dependencies:
 
 ```bash
-pip install pandas matplotlib
+pip install pandas matplotlib seaborn
 ```
 
 ## How to Run
 
-> _Update these instructions as your tool is built during the sprint._
-
+Run the complete workflow:
 ```bash
-# Example (once code is in place):
-python -m src.main
+python main.py
 ```
+The application will:
 
-Or import functions directly:
-
-```python
-# Example (once modules are in place):
-# from src.summaries import get_country_summary
-# summary = get_country_summary("supply_delivery_history.csv")
-# print(summary)
-```
+1. Load the raw shipment dataset
+2. Clean and standardize the data
+3. Save a cleaned version of the dataset
+4. Generate country-level analyses
+5. Generate product-level analyses
+6. Generate vendor-level analyses
+7. Generate shipment summary reports
+8. Display visualizations
 
 ## Collaboration Workflow
 
@@ -76,15 +83,14 @@ Or import functions directly:
 
 ## User Stories
 
-> _Add your sprint user stories here after Step 3 planning._
-
 | ID | Story | Points | Status |
 |----|-------|--------|--------|
-| US-01 | _As a ..., I want ..., so that ..._ | _?_ | Backlog |
-| US-02 | | | |
-| US-03 | | | |
-| US-04 | | | |
-| US-05 | | | |
+| US-01 | _As a user, I want the supply delivery history dataset to be cleaned and standardized, so that I can perform reliable analysis without issues caused by inconsistent dates, mixed data types, missing values, duplicate formatting, or messy categorical labels._ | _3_ | Closed |
+| US-02 | _As a supply chain analyst, I want to analyze shipment data by country so that I can compare shipment volume and value across destinations and identify key distribution trends._ | _5_ | Closed  |
+| US-03 | _As a supply chain analyst, I want to analyze shipment activity by product group, product category, and item type so that I can identify the most shipped products, understand product demand patterns, and evaluate the overall value of shipped commodities._ | _3_ | Closed  |
+| US-04 | _As a vendor relationship manager, I want to view shipment activity by vendor so that I can identify which vendors handle the highest shipment volume and generate the highest shipment value._ | _5_ | Closed  |
+| US-05 | _As a Supply Chain Manager, I want to run all shipment analysis modules from one main workflow so that I can review the complete supply chain summary in a single execution._ | _3_ | Closed  |
+| US-06 | _As a Supply Chain Manager, I want to run all shipment analysis modules from one main workflow so that I can review the complete supply chain summary in a single execution._ | _3_ | Closed  |
 
 ## License
 
