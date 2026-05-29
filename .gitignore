@@ -1,8 +1,10 @@
-# Python
+# Python cache and compiled files
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
+
+# Python build and packaging files
 .Python
 build/
 develop-eggs/
@@ -26,7 +28,7 @@ venv/
 env/
 ENV/
 
-# Jupyter
+# Jupyter Notebook checkpoints
 .ipynb_checkpoints/
 
 # IDE / editor
@@ -35,7 +37,7 @@ ENV/
 *.swp
 *.swo
 
-# OS
+# Operating system files
 .DS_Store
 Thumbs.db
 
@@ -43,10 +45,11 @@ Thumbs.db
 .env
 *.env
 
-# Generated outputs (keep supply_delivery_history.csv in repo)
+# Logs and temporary outputs
 *.log
 output/
-reports/
+reports/**/*.tmp
+reports/**/*.log
 
 # Testing
 .pytest_cache/
@@ -55,3 +58,4 @@ htmlcov/
 
 # Local Cursor / SpecStory tooling
 .specstory/
+.cursorindexingignore
